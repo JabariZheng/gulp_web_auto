@@ -30,8 +30,10 @@ gulp.task("sass",function(){
 gulp.task("browserSync",function(){
 	browserSync({
 		server:{
-			baseDir:"dev"
-		}
+			baseDir:"dev",
+			index:"index.html"
+		},
+		port:6681
 	})
 })
 
