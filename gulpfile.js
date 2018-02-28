@@ -9,6 +9,7 @@ var babel = require("gulp-babel");
 var useref = require("gulp-useref");
 var postcss = require("gulp-postcss");
 var autoprefixer = require("autoprefixer");
+var fileinclude = require('gulp-file-include');
 
 gulp.task("sass",function(){
 	var processors = [ 
@@ -26,6 +27,16 @@ gulp.task("sass",function(){
 		stream:true
 	}))
 })
+
+gulp.task('fileinclude', function() {
+    gulp.src('./dev/viewsInclude/*.html')//主文件
+        .pipe(fileinclude({
+            prefix: '@@',//变量前缀 @@include
+            basepath: './dev/public/',//引用文件路径
+            indent:true//保留文件的缩进
+        }))
+        .pipe(gulp.dest('./dev/'));//输出文件路径
+});
 
 gulp.task("browserSync",function(){
 	browserSync({
@@ -74,8 +85,9 @@ gulp.task('useref', function() {
 // 	return cache.clearAll(callback);
 // })
 
-gulp.task("watch",["browserSync","sass"],function(){
+gulp.task("watch",["fileinclude","browserSync","sass"],function(){
 	gulp.watch("dev/scss/**/*.scss",["sass"]);
+	gulp.watch("dev/viewsInclude/*.html",["fileinclude"]);
 	gulp.watch("dev/*.html",browserSync.reload);
 	gulp.watch("dev/js/**/*.js",browserSync.reload);
 })
